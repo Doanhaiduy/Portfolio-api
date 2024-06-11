@@ -55,6 +55,30 @@ const CreateProject = async (req, res) => {
     }
 };
 
+const IncrementViews = async (req, res) => {
+    try {
+        const project = await ProjectModel.findById(req.params.id);
+        if (project) {
+            project.views = project.views + 1;
+            const updatedProject = await project.save();
+            res.status(200).json({
+                status: 'success',
+                data: updatedProject,
+            });
+        } else {
+            res.status(404).json({
+                status: 'error',
+                message: 'Project not found',
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message,
+        });
+    }
+};
+
 const UpdateProject = async (req, res) => {
     try {
         const project = await ProjectModel.findById(req.params.id);
@@ -115,4 +139,5 @@ module.exports = {
     CreateProject,
     UpdateProject,
     DeleteProject,
+    IncrementViews,
 };
