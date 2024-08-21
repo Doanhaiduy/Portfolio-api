@@ -1,5 +1,7 @@
 const ProfileModel = require('../models/profileModel');
 const asyncHandler = require('express-async-handler');
+const { handleSendMail, validateEmail } = require('../helpers');
+const MessageModel = require('../models/MessageModel');
 
 const GetProfile = asyncHandler(async (req, res) => {
     const profile = await ProfileModel.findOne();
@@ -38,4 +40,46 @@ const UpdateProfile = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { GetProfile, UpdateProfile };
+const SendMessage = asyncHandler(async (req, res) => {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+        res.status(400);
+        throw new Error('All fields are required');
+    }
+
+    if (!validateEmail(email)) {
+        res.status(400);
+        throw new Error('Invalid email');
+    }
+
+    const mailOptions = {
+        from: email,
+        to: process.env.ADMIN_EMAIL,
+        subject: `Message from ${name} - ${email}`,
+        text: message,
+    };
+
+    const result = await handleSendMail(mailOptions);
+
+    if (result === 'OK') {
+        const newMessage = new MessageModel({
+            name,
+            email,
+            message,
+        });
+        await newMessage.save();
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                message: 'Your message has been sent successfully.',
+            },
+        });
+    } else {
+        res.status(400);
+        throw new Error('Something went wrong');
+    }
+});
+
+module.exports = { GetProfile, UpdateProfile, SendMessage };
