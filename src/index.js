@@ -10,6 +10,7 @@ require('dotenv').config();
 const projectRouter = require('./routes/projectRouter');
 const profileRouter = require('./routes/profileRouter');
 const authRouter = require('./routes/authRouter');
+const skillRouter = require('./routes/skillRouter');
 
 const PORT = process.env.PORT || 5000;
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/profile', profileRouter);
+app.use('/api/skills', skillRouter);
 
 app.use(errorMiddleware);
 

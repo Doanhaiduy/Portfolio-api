@@ -2,7 +2,7 @@ const ProjectModel = require('../models/projectModel');
 const asyncHandler = require('express-async-handler');
 
 const GetAllProjects = asyncHandler(async (req, res) => {
-    const projects = await ProjectModel.find().sort({ views: -1 });
+    const projects = await ProjectModel.find().sort({ views: -1 }).select('-__v');
     if (projects) {
         res.status(200).json({
             status: 'success',
@@ -15,7 +15,7 @@ const GetAllProjects = asyncHandler(async (req, res) => {
 });
 
 const GetProjectById = asyncHandler(async (req, res) => {
-    const project = await ProjectModel.findById(req.params.id);
+    const project = await ProjectModel.findById(req.params.id).select('-__v');
     if (project) {
         res.status(200).json({
             status: 'success',

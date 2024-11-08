@@ -1,10 +1,10 @@
 const ProfileModel = require('../models/profileModel');
 const asyncHandler = require('express-async-handler');
 const { handleSendMail, validateEmail } = require('../helpers');
-const MessageModel = require('../models/MessageModel');
+const MessageModel = require('../models/messageModel');
 
 const GetProfile = asyncHandler(async (req, res) => {
-    const profile = await ProfileModel.findOne();
+    const profile = await ProfileModel.findOne().select('-__v');
     if (profile) {
         res.status(200).json({
             status: 'success',
