@@ -1,7 +1,7 @@
 const ProfileModel = require('../models/profileModel');
 const asyncHandler = require('express-async-handler');
 const { handleSendMail, validateEmail } = require('../helpers');
-const MessageModel = require('../models/messageModel');
+const MessageModel = require('../models/MessageModel');
 
 const GetProfile = asyncHandler(async (req, res) => {
     const profile = await ProfileModel.findOne().select('-__v');
